@@ -12,3 +12,6 @@ spell/
 # lazy-lock.json
 
 .DS_Store
+
+# machine-local symlink created by claude-annotate install.sh
+lua/claude-annotate

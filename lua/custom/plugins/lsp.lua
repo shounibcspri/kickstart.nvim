@@ -118,6 +118,18 @@ return {
       end,
     })
 
+    -- kotlin_lsp resolves the Gradle model once at startup and exposes no reload command, so a
+    -- dependency version bump stays invisible (new APIs read as unresolved) until it restarts.
+    vim.api.nvim_create_autocmd('BufWritePost', {
+      group = vim.api.nvim_create_augroup('kotlin-lsp-gradle-reimport', { clear = true }),
+      pattern = { '*.gradle', '*.gradle.kts', 'gradle.properties', '*.versions.toml' },
+      callback = function()
+        if not next(vim.lsp.get_clients { name = 'kotlin_lsp' }) then return end
+        vim.notify('gradle file changed, restarting kotlin_lsp', vim.log.levels.INFO)
+        vim.cmd 'LspRestart kotlin_lsp'
+      end,
+    })
+
     -- Enable the following language servers
     --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
     --  See `:help lsp-config` for information about keys and how to configure
@@ -142,14 +154,24 @@ return {
       yamlls = {},
       bashls = {},
       terraformls = {},
+      jdtls = {},
+      kotlin_lsp = {
+        -- Without this the IntelliJ backend picks a random /tmp/idea-system-<rand> dir on every
+        -- launch and re-indexes the whole project from scratch, which takes minutes on big Gradle
+        -- repos. Pinning the paths makes the index persist across sessions.
+        cmd_env = {
+          IJ_JAVA_OPTIONS = table.concat({
+            '-Didea.config.path=' .. vim.fn.stdpath 'cache' .. '/kotlin-lsp/config',
+            '-Didea.system.path=' .. vim.fn.stdpath 'cache' .. '/kotlin-lsp/system',
+          }, ' '),
+        },
+      },
       --
       -- Some languages (like typescript) have entire language plugins that can be useful:
       --    https://github.com/pmizio/typescript-tools.nvim
       --
       -- But for many setups, the LSP (`ts_ls`) will work just fine
       -- ts_ls = {},
-
-      stylua = {}, -- Used to format Lua code
 
       -- Special Lua Config, as recommended by neovim help docs
       lua_ls = {
@@ -190,7 +212,7 @@ return {
     -- You can press `g?` for help in this menu.
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
-      -- You can add other tools here that you want Mason to install
+      'stylua', -- formatter binary for conform, not a language server
     })
 
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }

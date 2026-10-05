@@ -7,25 +7,26 @@
 ---@module 'lazy'
 ---@type LazySpec
 return {
-  'folke/tokyonight.nvim',
+  'catppuccin/nvim',
+  name = 'catppuccin', -- the repo is called `nvim`, so give lazy a usable directory name
   priority = 1000, -- Make sure to load this before all the other start plugins.
   config = function()
-    ---@diagnostic disable-next-line: missing-fields
-    require('tokyonight').setup {
-      style = 'night', -- 'night' | 'storm' | 'moon' | 'day'
-      transparent = true, -- let the terminal background show through
-      terminal_colors = true, -- theme the colors of the built-in :terminal
+    require('catppuccin').setup {
+      flavour = 'mocha', -- 'latte' | 'frappe' | 'macchiato' | 'mocha'
+      transparent_background = true, -- let ghostty's background-opacity show through
       styles = {
-        comments = { italic = false }, -- Disable italics in comments
-        sidebars = 'transparent', -- 'dark' | 'transparent' | 'normal'
-        floats = 'transparent', -- background for floating windows
+        comments = {}, -- Disable italics in comments
       },
-      dim_inactive = false, -- dim windows that aren't focused
+      -- transparent_background leaves floats opaque, so clear them too
+      custom_highlights = function(colors)
+        return {
+          NormalFloat = { bg = colors.none },
+          FloatBorder = { bg = colors.none },
+        }
+      end,
     }
 
-    -- Load the colorscheme here.
-    -- Like many other themes, this one has different styles, and you could load
-    -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-    vim.cmd.colorscheme 'tokyonight-night'
+    -- load the flavour by name, so a light `background` can never flip us to latte
+    vim.cmd.colorscheme 'catppuccin-mocha'
   end,
 }
