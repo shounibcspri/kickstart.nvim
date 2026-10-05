@@ -207,6 +207,7 @@ local servers = {
 local ensure_installed = vim.tbl_keys(servers or {})
 vim.list_extend(ensure_installed, {
   'stylua', -- formatter binary for conform, not a language server
+  'markdownlint', -- linter for kickstart.plugins.lint
 })
 
 require('mason-tool-installer').setup { ensure_installed = ensure_installed }

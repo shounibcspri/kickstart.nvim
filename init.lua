@@ -330,10 +330,11 @@ do
   -- Every other file in lua/custom/plugins/, in no particular order
   require 'custom.plugins'
 
-  -- Optional examples shipped with kickstart, in lua/kickstart/plugins/:
-  -- require 'kickstart.plugins.debug'
-  -- require 'kickstart.plugins.lint'
-  -- require 'kickstart.plugins.autopairs'
+  -- Optional examples shipped with kickstart, in lua/kickstart/plugins/.
+  -- After custom.plugins: debug sets up mason-nvim-dap, which needs lsp.lua's mason.setup.
+  require 'kickstart.plugins.debug'
+  require 'kickstart.plugins.lint'
+  require 'kickstart.plugins.autopairs'
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
