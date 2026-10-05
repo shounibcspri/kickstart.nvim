@@ -3,18 +3,12 @@
 --
 -- See the kickstart.nvim README for more information
 
----@module 'lazy'
----@type LazySpec
-return {
-  { -- Sticky header showing the enclosing scope (parent keys in JSON/YAML, etc.)
-    'nvim-treesitter/nvim-treesitter-context',
-    event = { 'BufReadPost', 'BufNewFile' },
-    opts = {
-      max_lines = 5, -- how many context lines to show at most (0 = unlimited)
-      multiline_threshold = 1, -- collapse multiline nodes to a single line
-    },
-    keys = {
-      { '[c', function() require('treesitter-context').go_to_context(vim.v.count1) end, desc = 'Jump to [c]ontext (upper key)' },
-    },
-  },
-}
+-- Iterate over all Lua files in the plugins directory and load them.
+-- `vim.fs.dir()` iteration order is unspecified and must not be relied upon.
+local plugins_dir = vim.fs.joinpath(vim.fn.stdpath 'config', 'lua', 'custom', 'plugins')
+for file_name, type in vim.fs.dir(plugins_dir, { follow = true }) do
+  if (type == 'file' or type == 'link') and file_name:match '%.lua$' and file_name ~= 'init.lua' then
+    local module = file_name:gsub('%.lua$', '')
+    require('custom.plugins.' .. module)
+  end
+end
