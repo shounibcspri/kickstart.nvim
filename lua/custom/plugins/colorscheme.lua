@@ -12,6 +12,24 @@ require('catppuccin').setup {
   styles = {
     comments = {}, -- Disable italics in comments
   },
+  -- Listed, not auto-detected: the colour cache only rebuilds when this table changes, and on a
+  -- fresh vim.pack install this file runs before the other plugins exist. Add new plugins here.
+  auto_integrations = false,
+  integrations = {
+    blink_cmp = true,
+    dap = true,
+    dap_ui = true,
+    fidget = true,
+    gitsigns = true,
+    indent_blankline = true,
+    mason = true,
+    mini = true,
+    neotree = true,
+    telescope = true,
+    treesitter_context = true,
+    ufo = true,
+    which_key = true,
+  },
   -- transparent_background leaves floats opaque, so clear them too
   custom_highlights = function(colors)
     return {
