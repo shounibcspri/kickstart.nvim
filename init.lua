@@ -171,6 +171,9 @@ do
   -- instead raise a dialog asking if you wish to save the current file(s)
   -- See `:help 'confirm'`
   vim.o.confirm = true
+
+  -- Keep plugin windows (neo-tree) out of sessions: restoring them on :restart causes E95
+  vim.opt.sessionoptions:remove 'blank'
 end
 
 -- ============================================================
@@ -239,6 +242,10 @@ do
   -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
   -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
   -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+
+  -- g_ rather than $: in visual mode $ also selects the newline
+  vim.keymap.set({ 'n', 'x', 'o' }, 'H', '^', { desc = 'Go to first non-blank of line' })
+  vim.keymap.set({ 'n', 'x', 'o' }, 'L', 'g_', { desc = 'Go to last non-blank of line' })
 
   -- [[ Basic Autocommands ]]
   --  See `:help lua-guide-autocommands`
