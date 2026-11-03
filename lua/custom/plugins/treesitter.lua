@@ -6,7 +6,12 @@ vim.pack.add { { src = 'https://github.com/nvim-treesitter/nvim-treesitter', ver
 
 -- Ensure basic parsers are installed
 local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+-- and those of code blocks in markdown (claude-annotate): a code block never fires FileType,
+-- so the autocmd below never installs its language's parser
+vim.list_extend(parsers, { 'cpp', 'go', 'java', 'javascript', 'kotlin', 'python', 'rust', 'typescript' })
 require('nvim-treesitter').install(parsers)
+-- code blocks tagged ```rs: nvim reads a block's tag as a parser or filetype name, and rs is neither
+vim.treesitter.language.register('rust', 'rs')
 
 ---@param buf integer
 ---@param language string
