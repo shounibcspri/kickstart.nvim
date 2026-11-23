@@ -25,6 +25,7 @@ require('catppuccin').setup {
     mason = true,
     mini = true,
     neotree = true,
+    snacks = true,
     telescope = true,
     treesitter_context = true,
     ufo = true,
